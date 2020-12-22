@@ -116,27 +116,11 @@ class Media_Bulk_Downloader_Admin {
 	     *        Administration Menus: http://codex.wordpress.org/Administration_Menus
 	     *
 	     */
-	    add_media_page( 'Media Selector', 'Media Selector', 'manage_options', $this->plugin_name.'-selector', array($this, 'display_plugin_setup_page') );
+	    // add_media_page( 'Media Selector', 'Media Selector', 'manage_options', $this->plugin_name.'-selector', array($this, 'display_plugin_setup_page') );
 
-	    add_media_page( 'Media Downloader', 'Media Downloader', 'manage_options', $this->plugin_name.'-downloader', array($this, 'display_plugin_download_page') );
+	    add_media_page( 'Media Bulk Downloader Archives', 'All Archives', 'manage_options', $this->plugin_name.'-downloader', array($this, 'display_plugin_download_page') );
 	}
-	
-	 /**
-	 * Add settings action link to the plugins page.
-	 *
-	 * @since    1.0.0
-	 */
-	 
-	public function add_action_links( $links ) {
-	    /*
-	    *  Documentation : https://codex.wordpress.org/Plugin_API/Filter_Reference/plugin_action_links_(plugin_file_name)
-	    */
-	   $settings_link = array(
-	    //'<a href="' . admin_url( 'options-general.php?page=' . $this->plugin_name ) . '">' . __('Settings', $this->plugin_name) . '</a>',
-	   );
-	   return array_merge(  $settings_link, $links );
-	
-	}
+		
 	
 	/**
 	 * Render the settings page for this plugin.
@@ -158,7 +142,7 @@ class Media_Bulk_Downloader_Admin {
 	    include_once( 'partials/wp-bilmar-admin-download.php' );
 	}
 
-	public function add_files_to_archive() {		
+	public function add_files_to_archive() {
 		$zipfile = $_POST["zipfile"];
 		$attachmentIds = $_POST["attachment_ids"];
 
@@ -178,26 +162,18 @@ class Media_Bulk_Downloader_Admin {
 		die;
 	}
 
-	function format_size( $size ) {
+	public function format_size( $size ) {
 		$sizes = array(" Bytes", " KB", " MB", " GB", " TB", " PB", " EB", " ZB", " YB");
 		if ($size == 0) { return('n/a'); } else {
 		return (round($size/pow(1024, ($i = floor(log($size, 1024)))), 2) . $sizes[$i]); }
 	}
 
-	 function msdb_init_actions() {
-        // 	ob_start();
-        // 	if ( isset($_GET['download']) && !empty($_GET['filename']) ) {
-        // 		$destination = BILMAR_ABSOLUTE_FILE_PATH."archives/".$_GET['filename'];
-        // 		if (file_exists($destination)) {
-        // 			header('Content-Type: application/zip');
-        //     		header('Content-disposition: attachment; filename="'.$_GET['filename'].'"');
-        // 			readfile($destination);
-        //             // remove zip file is exists in temp path
-        //             // unlink($destination);
-        // 		} else {
-        // 			exit("Could not find Zip file to download");
-        // 		}
-        // 	}
+	/**
+	* This is calling when we delete archive file and then redirect
+	*
+	* @since    1.0.0
+	*/
+	public function msdb_init_actions() {        
 		if ( !empty($_GET['deletefile']) ) {
 			$fileToDelete = removeBackSlashes( BILMAR_ABSOLUTE_FILE_PATH ).'archives/'.$_GET['deletefile'];
 			unlink($fileToDelete);
@@ -206,12 +182,11 @@ class Media_Bulk_Downloader_Admin {
 		}
 	 }
 
-	 /**
-	 * Add Add to archive action link to the plugins page.
-	 *
-	 * @since    1.0.0
-	 */
-	 
+	/**
+	* Add Add to archive action link to the plugins page.
+	*
+	* @since    1.0.0
+	*/	 
 	public function add_upload_actions( $actions ) {		
 		$actions['add_to_archive'] = "Add To Archive";		
 		return $actions;
@@ -255,6 +230,26 @@ class Media_Bulk_Downloader_Admin {
 		}
 		else {
 			return $redirect_to;
+		}
+	}
+
+	public function media_list_custom_columns( $columns ) {
+		$columns["filesize"] = "File Size";
+    	return $columns;
+	}
+
+	public function media_list_custom_column_cell( $colname, $cptid ) {
+		if ( 'filesize' != $colname || !wp_attachment_is_image( $cptid ) ) {
+			return;
+		}
+		
+		if ( $colname == 'filesize') {
+			$filesize = filesize( get_attached_file( $cptid ) );
+			$filesize = size_format($filesize, 2);
+			echo $filesize;
+		} 
+		else {
+			return;
 		}
 	}
 }

@@ -155,20 +155,27 @@ class Media_Bulk_Downloader {
 		$plugin_admin = new Media_Bulk_Downloader_Admin( $this->get_plugin_name(), $this->get_version() );
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
+
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 
-		// Add menu item
+		/**
+		* Adding Admin Menus
+		**/
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'add_plugin_admin_menu' );
 		
-		// Add Settings link to the plugin
-		$plugin_basename = plugin_basename( plugin_dir_path( __DIR__ ) . $this->plugin_name . '.php' );
+		/**
+		* Ajax handler to add archives via ajax
+		**/
+		// $this->loader->add_action( 'wp_ajax_add_files_to_archive', $plugin_admin, 'add_files_to_archive' );
 
-		$this->loader->add_filter( 'plugin_action_links_' . $plugin_basename, $plugin_admin, 'add_action_links' );
+		/**
+		* Ajax handler to add archives via ajax
+		**/
+		// $this->loader->add_action( 'wp_ajax_nopriv_add_files_to_archive', $plugin_admin, 'add_files_to_archive' );
 
-		$this->loader->add_action( 'wp_ajax_add_files_to_archive', $plugin_admin, 'add_files_to_archive' );
-
-		$this->loader->add_action( 'wp_ajax_nopriv_add_files_to_archive', $plugin_admin, 'add_files_to_archive' );
-
+		/**
+		* Init Handler
+		**/
 		$this->loader->add_action( 'init', $plugin_admin, 'msdb_init_actions' );
 
 		// Got this value from class-wp-list-table.php {$this->screen->id}
@@ -177,6 +184,13 @@ class Media_Bulk_Downloader {
 		// Got this value from class-wp-list-table.php {$this->screen->id}
 		$this->loader->add_action( "handle_bulk_actions-upload",   $plugin_admin, 'manage_upload_actions', 10, 3 );
 
+		// Adding normal columns
+		$this->loader->add_filter( "manage_upload_columns",   $plugin_admin, 'media_list_custom_columns' );
+
+		// Adding sortable columns
+		// $this->loader->add_filter( "manage_upload_sortable_columns", $plugin_admin, 'media_list_custom_columns' );
+
+		$this->loader->add_action('manage_media_custom_column', $plugin_admin, 'media_list_custom_column_cell', 11, 2);
 	}
 
 	/**
