@@ -177,7 +177,7 @@ class Media_Bulk_Downloader_Admin {
 		if ( !empty($_GET['deletefile']) ) {
 			$fileToDelete = removeBackSlashes( BILMAR_ABSOLUTE_FILE_PATH ).'archives/'.$_GET['deletefile'];
 			unlink($fileToDelete);
-			wp_redirect( '?page=wp-bilmar-downloader' );
+			wp_redirect( '?page=media-bulk-downloader-downloader' );
 			exit;
 		}
 	 }
