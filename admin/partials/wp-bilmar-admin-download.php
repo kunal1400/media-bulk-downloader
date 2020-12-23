@@ -3,6 +3,7 @@ $archiveFolderPath = removeBackSlashes( BILMAR_ABSOLUTE_FILE_PATH ).'archives';
 $files = list_files( $archiveFolderPath );
 ?>
 <div class="wrap">
+	<h2>All Archives</h2>
 	<table class='wp-list-table widefat fixed striped media'>
 		<thead>
 			<tr>
