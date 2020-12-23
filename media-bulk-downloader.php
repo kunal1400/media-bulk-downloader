@@ -39,6 +39,10 @@ define( 'MEDIA_BULK_DOWNLOADER_VERSION', '1.0.0' );
 
 define( 'BILMAR_ABSOLUTE_FILE_PATH', plugin_dir_path(__FILE__) );
 
+define( 'BILMAR_RELATIVE_ARCHIVES_PATH', plugins_url('archives/', __FILE__) );
+
+define( 'ALL_ARCHIVES_ADMIN_PAGE_SLUG', 'media-bulk-downloader-downloader' );
+
 function removeBackSlashes( $str ) {
 	return str_replace('\\', '/', $str);
 }
