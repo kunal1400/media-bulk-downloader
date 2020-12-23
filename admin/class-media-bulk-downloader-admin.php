@@ -116,21 +116,8 @@ class Media_Bulk_Downloader_Admin {
 	     *        Administration Menus: http://codex.wordpress.org/Administration_Menus
 	     *
 	     */
-	    // add_media_page( 'Media Selector', 'Media Selector', 'manage_options', $this->plugin_name.'-selector', array($this, 'display_plugin_setup_page') );
-
-	    add_media_page( 'Media Bulk Downloader Archives', 'All Archives', 'manage_options', ALL_ARCHIVES_ADMIN_PAGE_SLUG, array($this, 'display_plugin_download_page') );
-	}
-		
-	
-	// /**
-	//  * Render the settings page for this plugin.
-	//  *
-	//  * @since    1.0.0
-	//  */
-	 
-	// public function display_plugin_setup_page() {
-	//     include_once( 'partials/wp-bilmar-admin-display.php' );
-	// }
+	    add_media_page( 'Media Bulk Downloader Archives', 'All Archives', 'manage_options', MBD_ALL_ARCHIVES_ADMIN_PAGE_SLUG, array($this, 'display_plugin_download_page') );
+	}	
 
 	/**
 	 * Render the settings page for this plugin.
@@ -141,29 +128,6 @@ class Media_Bulk_Downloader_Admin {
 	public function display_plugin_download_page() {
 	    include_once( 'partials/wp-bilmar-admin-download.php' );
 	}
-
-	/**
-	* This function is usefull if we add files to archive via ajax
-	**/
-	// public function add_files_to_archive() {
-	// 	$zipfile = $_POST["zipfile"];
-	// 	$attachmentIds = $_POST["attachment_ids"];
-
-	// 	if ( $zipfile && is_array($attachmentIds) ) {
-	// 		$zip = new ZipArchive();
-	// 		$zip->open( $zipfile );
-	// 		foreach($attachmentIds as $id) {				
-	// 			$file = removeBackSlashes( get_attached_file( $id ) );
-	// 			$zip->addFile( $file, basename($file) );
-	// 		}
-	// 		$zip->deleteName('test/');
-	// 		$zip->close();
-	// 		echo $this->format_size( filesize($zipfile) );
-	// 	} else {
-	// 		echo "Either zipfile or attachmentIds array is empty";
-	// 	}
-	// 	die;
-	// }
 
 	public function format_size( $size ) {
 		$sizes = array(" Bytes", " KB", " MB", " GB", " TB", " PB", " EB", " ZB", " YB");
@@ -178,9 +142,9 @@ class Media_Bulk_Downloader_Admin {
 	*/
 	public function msdb_init_actions() {        
 		if ( !empty($_GET['deletefile']) ) {
-			$fileToDelete = removeBackSlashes( BILMAR_ABSOLUTE_FILE_PATH ).'archives/'.$_GET['deletefile'];
+			$fileToDelete = mbd_remove_back_slashes( MBD_BILMAR_ABSOLUTE_FILE_PATH ).'archives/'.$_GET['deletefile'];
 			unlink($fileToDelete);
-			wp_redirect( '?page='.ALL_ARCHIVES_ADMIN_PAGE_SLUG );
+			wp_redirect( '?page='.MBD_ALL_ARCHIVES_ADMIN_PAGE_SLUG );
 			exit;
 		}
 	 }
@@ -203,7 +167,7 @@ class Media_Bulk_Downloader_Admin {
 			$zip = new ZipArchive();
 			$date = date("m-d-y-h-i-s");
 			$filename = dirname( plugin_dir_path(__FILE__) )."/archives/".$date.".zip";
-			$filePath = removeBackSlashes($filename);
+			$filePath = mbd_remove_back_slashes($filename);
 
 			// Deleting the file if already exists
 			if( file_exists($filePath) ) {
@@ -216,7 +180,7 @@ class Media_Bulk_Downloader_Admin {
 			}
 
 			foreach($post_ids as $file){
-				$attachedFilepath = removeBackSlashes( get_attached_file( $file ) );					
+				$attachedFilepath = mbd_remove_back_slashes( get_attached_file( $file ) );					
 				try {
 					$zip->addFile( $attachedFilepath, basename( $attachedFilepath ) );
 				} catch (Exception $err) {
@@ -226,9 +190,7 @@ class Media_Bulk_Downloader_Admin {
 
 			$zip->close();
 
-			// add_flash_notice( __("My notice message, this is a warning and is dismissible"), "warning", true );
-
-			return admin_url( 'upload.php?page='.ALL_ARCHIVES_ADMIN_PAGE_SLUG );
+			return admin_url( 'upload.php?page='.MBD_ALL_ARCHIVES_ADMIN_PAGE_SLUG );
 
 		}
 		else {

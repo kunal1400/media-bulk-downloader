@@ -37,43 +37,47 @@ if ( ! defined( 'WPINC' ) ) {
  */
 define( 'MEDIA_BULK_DOWNLOADER_VERSION', '1.0.0' );
 
-define( 'BILMAR_ABSOLUTE_FILE_PATH', plugin_dir_path(__FILE__) );
+define( 'MBD_BILMAR_ABSOLUTE_FILE_PATH', plugin_dir_path(__FILE__) );
 
-define( 'BILMAR_RELATIVE_ARCHIVES_PATH', plugins_url('archives/', __FILE__) );
+define( 'MBD_BILMAR_RELATIVE_ARCHIVES_PATH', plugins_url('archives/', __FILE__) );
 
-define( 'ALL_ARCHIVES_ADMIN_PAGE_SLUG', 'media-bulk-downloader-downloader' );
+define( 'MBD_ALL_ARCHIVES_ADMIN_PAGE_SLUG', 'media-bulk-downloader-downloader' );
 
-function removeBackSlashes( $str ) {
-	return str_replace('\\', '/', $str);
+if ( !function_exists('mbd_remove_back_slashes') ) {    
+    function mbd_remove_back_slashes( $str ) {
+        return str_replace('\\', '/', $str);
+    }
 }
 
-function formatSizeUnits($bytes) {
-    if ($bytes >= 1073741824)
-    {
-        $bytes = number_format($bytes / 1073741824, 2) . ' GB';
-    }
-    elseif ($bytes >= 1048576)
-    {
-        $bytes = number_format($bytes / 1048576, 2) . ' MB';
-    }
-    elseif ($bytes >= 1024)
-    {
-        $bytes = number_format($bytes / 1024, 2) . ' KB';
-    }
-    elseif ($bytes > 1)
-    {
-        $bytes = $bytes . ' bytes';
-    }
-    elseif ($bytes == 1)
-    {
-        $bytes = $bytes . ' byte';
-    }
-    else
-    {
-        $bytes = '0 bytes';
-    }
+if ( !function_exists('mbd_format_size_units') ) {    
+    function mbd_format_size_units($bytes) {
+        if ($bytes >= 1073741824)
+        {
+            $bytes = number_format($bytes / 1073741824, 2) . ' GB';
+        }
+        elseif ($bytes >= 1048576)
+        {
+            $bytes = number_format($bytes / 1048576, 2) . ' MB';
+        }
+        elseif ($bytes >= 1024)
+        {
+            $bytes = number_format($bytes / 1024, 2) . ' KB';
+        }
+        elseif ($bytes > 1)
+        {
+            $bytes = $bytes . ' bytes';
+        }
+        elseif ($bytes == 1)
+        {
+            $bytes = $bytes . ' byte';
+        }
+        else
+        {
+            $bytes = '0 bytes';
+        }
 
-    return $bytes;
+        return $bytes;
+    }
 }
 
 /**
