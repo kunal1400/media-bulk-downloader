@@ -1,5 +1,5 @@
 <?php 
-$archiveFolderPath = mbd_remove_back_slashes( MBD_BILMAR_ABSOLUTE_FILE_PATH ).'archives';
+$archiveFolderPath = realpath( MBD_BILMAR_ABSOLUTE_FILE_PATH.'archives');
 $files = list_files( $archiveFolderPath );
 ?>
 <div class="wrap">
@@ -36,7 +36,7 @@ $files = list_files( $archiveFolderPath );
 							<td><?php echo mbd_format_size_units( filesize($file) ) ?></td>
 							<td><?php echo $numberOfFilesInZip ?> Files</td>
 							<td>
-								<a class="button button-primary" target="_blank" href="<?php echo MBD_BILMAR_RELATIVE_ARCHIVES_PATH.$filename ?>">Download</a>
+								<a class="button button-primary" target="_blank" href="<?php echo MBD_BILMAR_RELATIVE_ARCHIVES_PATH.sanitize_file_name($filename) ?>">Download</a>
 								<a class="button button-warning" href="<?php echo '?page=wp-bilmar-downloader&deletefile='.$filename ?>">Delete</a>
 							</td>
 						</tr>

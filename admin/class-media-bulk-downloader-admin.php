@@ -142,7 +142,8 @@ class Media_Bulk_Downloader_Admin {
 	*/
 	public function msdb_init_actions() {        
 		if ( !empty($_GET['deletefile']) ) {
-			$fileToDelete = mbd_remove_back_slashes( MBD_BILMAR_ABSOLUTE_FILE_PATH ).'archives/'.$_GET['deletefile'];
+			// $fileToDelete = mbd_remove_back_slashes( MBD_BILMAR_ABSOLUTE_FILE_PATH ).'archives/'.sanitize_file_name($_GET['deletefile']);
+			$fileToDelete = realpath( MBD_BILMAR_ABSOLUTE_FILE_PATH.'archives/'.sanitize_file_name($_GET['deletefile']) );
 			unlink($fileToDelete);
 			wp_redirect( '?page='.MBD_ALL_ARCHIVES_ADMIN_PAGE_SLUG );
 			exit;
